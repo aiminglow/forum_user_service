@@ -1,0 +1,32 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aiming.low.forum_user_service.dao.ImmutableUserMapper">
+    <resultMap id="ImmutableUser" type="com.aiming.low.forum_user_service.entity.ImmutableUser">
+        <constructor>
+            <idArg column="user_id" javaType="long"/>
+            <arg column="user_email" javaType="String"/>
+            <arg column="user_name" javaType="String"/>
+            <arg column="user_password" javaType="String"/>
+            <arg column="create_time" javaType="java.util.Date"
+                 typeHandler="com.aiming.low.forum_user_service.dao.type_handler.DateIntegerHandler"/>
+            <arg column="last_mod_time" javaType="java.util.Date"
+                 typeHandler="com.aiming.low.forum_user_service.dao.type_handler.DateIntegerHandler"/>
+            <arg column="delete_time" javaType="java.util.Date"
+                 typeHandler="com.aiming.low.forum_user_service.dao.type_handler.DateIntegerHandler"/>
+            <arg column="user_status" javaType="com.aiming.low.forum_user_service.entity.ThreeStatus"/>
+        </constructor>
+    </resultMap>
+    <sql id="baseColumnList">
+       user_id, user_email, user_name, user_password, create_time, last_mod_time, delete_time, user_status
+    </sql>
+
+    <select id="selectUserListByUserIdSet" parameterType="java.util.HashSet" resultMap="ImmutableUser">
+        select
+        <include refid="baseColumnList"/>
+        from user
+        where user_id in
+        <foreach collection="collection" item="userId" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+    </select>
+</mapper>
